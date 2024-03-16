@@ -55,18 +55,18 @@ docker run -d \
 
 Containers are configured using parameters passed at runtime (such as those above). These parameters are separated by a colon and indicate `<external>:<internal>` respectively. For example, `-p 8080:80` would expose port `80` from inside the container to be accessible from the host's IP on port `8080` outside the container.
 
-| Parameter | Function |
-| :----: | --- |
-| `-p 22067` | Relay advertising |
-| `-p 22070` | Port to retrieve statistics |
-| `-e PUID=1000` | for UserID - see below for explanation |
-| `-e PGID=1000` | for GroupID - see below for explanation |
-| `-e TZ=Etc/UTC` | specify a timezone to use, see this [list](https://en.wikipedia.org/wiki/List_of_tz_database_time_zones#List). |
-| `-e TOKEN=MyToken` | Set a token to securing your relay |
-| `-e PRIVATE=True` | Set your relay private. It will not announced itself to the pool |
-| `-e PORT=22067` | If you set a different port on the host side to inform the server - see below for example |
-| `-e EXTERNAL_ADDRESS=` | If you want to fix the address of your relay |
-| `-v /var/strelaysrv` | Configuration files. |
+|       Parameter        | Default | Function                                                                                                                                                     |
+| :--------------------: | ------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+|       `-p 22067`       | `N/A`   | Relay advertising                                                                                                                                            |
+|       `-p 22070`       | `N/A`   | Port to retrieve statistics                                                                                                                                  |
+|     `-e PUID=1000`     | `N/A`   | for UserID - see below for explanation                                                                                                                       |
+|     `-e PGID=1000`     | `N/A`   | for GroupID - see below for explanation                                                                                                                      |
+|    `-e TZ=Etc/UTC`     | `N/A`   | specify a timezone to use, see this [list](https://en.wikipedia.org/wiki/List_of_tz_database_time_zones#List).                                               |
+|   `-e TOKEN=MyToken`   | `Empty` | Set a token to securing your relay. Disables joining any pools.                                                                                              |
+|   `-e PRIVATE=True`    | `Empty` | Set your relay private. It will not announced itself to the pool. If not set, it will announce to the default pool (`https://relays.syncthing.net/endpoint`) |
+|       `-e PORT=`       | `22067` | If you set a different port on the host side to inform the server - see below for example                                                                    |
+| `-e EXTERNAL_ADDRESS=` | `Empty` | If you want to fix the address of your relay                                                                                                                 |
+|  `-v /var/strelaysrv`  | `N/A`   | Configuration files.                                                                                                                                         |
 
 ## Environment variables from files (Docker secrets)
 
