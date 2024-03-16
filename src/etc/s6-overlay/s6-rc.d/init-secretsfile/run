@@ -1,0 +1,17 @@
+#!/usr/bin/with-contenv /bin/bash
+# shellcheck shell=bash
+
+echo ""
+
+if find /run/secrets/* -maxdepth 1 > /dev/null 2>&1; then
+    for FILENAME in /run/secrets/*; do
+            SECRETFILE=$(cat "${FILENAME}")
+            FILESTRIP="/run/s6/container_environment/${FILENAME##*/}"
+            if [[ $(tail -n1 "${FILENAME}") == "" ]]; then
+                echo "* [env-init-secretsfile] Your secret: ${FILENAME##*/}"
+                echo "           contains a trailing newline and may not work as expected"
+            fi
+            echo "${SECRETFILE}" > "${FILESTRIP}"
+            echo "* [env-init-secretsfile] ${FILESTRIP##*/} set from ${FILENAME##*/}"
+    done
+fi

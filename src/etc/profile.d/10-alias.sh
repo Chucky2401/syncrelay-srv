@@ -1,0 +1,6 @@
+alias ls='ls --group-directories-first'
+alias ll='ls -l'
+alias la='ls -la'
+alias lh='ls -lh'
+alias lah='ls -lah'
+alias lha='ls -lah'
