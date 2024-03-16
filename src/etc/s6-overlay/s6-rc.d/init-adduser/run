@@ -1,0 +1,14 @@
+#!/usr/bin/with-contenv /bin/bash
+
+PUID=${PUID:-911}
+PGID=${PGID:-911}
+
+echo ""
+echo "* [env-init-adduser] Change user PGID and PUID..."
+
+groupmod -o -g "$PGID" syncrelay
+usermod -o -u "$PUID" syncrelay
+
+echo "* [env-init-adduser] Set owner on working folder..."
+
+chown syncrelay:users /var/strelaysrv
