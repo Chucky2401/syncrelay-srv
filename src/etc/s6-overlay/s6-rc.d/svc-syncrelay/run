@@ -1,0 +1,54 @@
+#!/usr/bin/with-contenv /bin/bash
+
+TOKEN=${TOKEN}
+PORT=${PORT}
+EXTERNAL_ADDRESS=${EXTERNAL_ADDRESS}
+EXT_ADDRESS="$EXTERNAL_ADDRESS:$PORT"
+PRIVATE=${PRIVATE}
+POOLS=${POOLS}
+VERSION=${VERSION}
+
+echo "
+────────────────────────────────────────
+|                                       |
+|         Syncthing Relay Server        |
+|          by The Black Wizard          |
+|                v$VERSION                 |
+|                                       |
+────────────────────────────────────────
+"
+echo ""
+
+echo "* Set variables..."
+
+if [[ $EXT_ADDRESS =~ ^:[0-9]+$ ]]; then
+    echo "** External address has been set to 0.0.0.0:$PORT!"
+else
+    IPADDRESS=`dig $EXTERNAL_ADDRESS -t A +short | grep -v '\.$'`
+    echo "** External address has been set to $IPADDRESS:$PORT!"
+fi
+
+if [[ -z $PRIVATE ]]; then
+    echo "** This relay is public!"
+else
+    if [[ $PRIVATE == "True" ]]; then
+        POOLS=""
+        echo "** This relay is private!"
+    else
+        echo "** WARN: Private environment variable value is invalid, keep as public!"
+        echo "** WARN: If you want to set it private, set it to 'True'!"
+    fi
+fi
+
+echo ""
+echo "* Initialization complete!"
+echo ""
+echo "* Run Syncthing Relay..."
+echo ""
+
+exec \
+    s6-notifyoncheck -d -n 300 -w 1000 -c "nc -z localhost 22067" \
+        cd /var/strelaysrv/ s6-setuidgid syncrelay /usr/bin/strelaysrv \
+        -ext-address="$EXT_ADDRESS" \
+        -token="$TOKEN" \
+        -pools="$POOLS"
