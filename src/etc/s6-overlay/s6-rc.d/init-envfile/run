@@ -12,7 +12,7 @@ if find /run/s6/container_environment/SECRET__* -maxdepth 1 > /dev/null 2>&1; th
                     echo "* [env-init-envfile] Your secret: ${FILENAME##*/}"
                     echo "           contains a trailing newline and may not work as expected"
                 fi
-                cat "${SECRETFILE}" >"${FILESTRIP}"
+                printf "%s" "$(cat /run/secrets/token)" > "${FILESTRIP}"
                 echo "* [env-init-envfile] ${FILESTRIP##*/} set from ${FILENAME##*/}"
             else
                 echo "* [env-init-envfile] cannot find secret in ${FILENAME##*/}"

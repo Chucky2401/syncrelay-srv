@@ -2,7 +2,7 @@ FROM alpine:3.19
 
 LABEL fr.blackwizard.author="Chucky2401" \
     fr.blackwizard.description="Syncthing RelaySrv" \
-    fr.blackwizard.version="0.1.2" \
+    fr.blackwizard.version="1.0.0" \
     fr.blackwizard.source="https://github.com/Chucky2401/syncrelay-srv" \
     fr.blackwizard.support="https://github.com/Chucky2401/syncrelay-srv/issues" \
     fr.blackwizard.url="https://blackwizard.fr" \
@@ -49,7 +49,7 @@ COPY src/ /
 
 ENV PRIVATE="" TOKEN="" EXTERNAL_ADDRESS="" PORT="22067" POOLS="https://relays.syncthing.net/endpoint"
 ENV ENV="/etc/profile"
-ENV VERSION="0.1.2"
+ENV VERSION="1.0.0"
 ENV PUID=1000 PGID=1000 
 
 EXPOSE 22067 22070
