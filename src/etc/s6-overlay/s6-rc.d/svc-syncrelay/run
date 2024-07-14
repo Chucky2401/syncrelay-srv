@@ -6,14 +6,14 @@ EXTERNAL_ADDRESS=${EXTERNAL_ADDRESS}
 EXT_ADDRESS="$EXTERNAL_ADDRESS:$PORT"
 PRIVATE=${PRIVATE}
 POOLS=${POOLS}
-VERSION=${VERSION}
+VERSION=$(apk list -I | grep syncthing-utils | awk '{print $1}' | cut -d '-' -f 3,4)
 
 echo "
 ────────────────────────────────────────
 |                                       |
 |         Syncthing Relay Server        |
 |          by The Black Wizard          |
-|                v$VERSION                 |
+|              v$VERSION               |
 |                                       |
 ────────────────────────────────────────
 "

@@ -1,8 +1,8 @@
-FROM alpine:3.19
+FROM alpine:3.20
 
 LABEL fr.blackwizard.author="Chucky2401" \
     fr.blackwizard.description="Syncthing RelaySrv" \
-    fr.blackwizard.version="1.0.0" \
+    fr.blackwizard.version="1.27.7-r3" \
     fr.blackwizard.source="https://github.com/Chucky2401/syncrelay-srv" \
     fr.blackwizard.support="https://github.com/Chucky2401/syncrelay-srv/issues" \
     fr.blackwizard.url="https://blackwizard.fr" \
@@ -18,7 +18,7 @@ RUN \
     echo "*** Install syncthing-utils ***" ; \
     apk add --no-cache syncthing-utils
 
-ARG S6_OVERLAY_VERSION="3.1.6.2"
+ARG S6_OVERLAY_VERSION="3.2.0.0"
 ARG S6_OVERLAY_ARCH="aarch64"
 
 # add s6 overlay
@@ -49,7 +49,6 @@ COPY src/ /
 
 ENV PRIVATE="" TOKEN="" EXTERNAL_ADDRESS="" PORT="22067" POOLS="https://relays.syncthing.net/endpoint"
 ENV ENV="/etc/profile"
-ENV VERSION="1.0.0"
 ENV PUID=1000 PGID=1000 
 
 EXPOSE 22067 22070
