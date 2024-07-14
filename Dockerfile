@@ -49,7 +49,6 @@ COPY src/ /
 
 ENV PRIVATE="" TOKEN="" EXTERNAL_ADDRESS="" PORT="22067" POOLS="https://relays.syncthing.net/endpoint"
 ENV ENV="/etc/profile"
-ENV VERSION="1.0.0"
 ENV PUID=1000 PGID=1000 
 
 EXPOSE 22067 22070
