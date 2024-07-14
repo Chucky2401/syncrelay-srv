@@ -22,7 +22,7 @@ To help you get started creating a container from this image you can either use 
 ```yaml
 services:
   syncrelay:
-    image: chucky2401/syncrelay:1.0.0
+    image: chucky2401/syncrelay:1.27.7-r3
     container_name: syncrelay
     environment:
       - PUID=1000
@@ -48,7 +48,7 @@ docker run -d \
   -p 22070:22070 \
   -v /path/to/syncthing/strelaysrv:/var/strelaysrv
   --restart unless-stopped \
-  chucky2401/syncrelay:1.0.0
+  chucky2401/syncrelay:1.27.7-r3
 ```
 
 ## Parameters
@@ -87,7 +87,7 @@ Example:
 ```yaml
 services:
   syncrelay:
-    image: chucky2401/syncrelay:1.0.0
+    image: chucky2401/syncrelay:1.27.7-r3
     container_name: syncrelay
     environment:
       - PUID=1000
@@ -114,7 +114,7 @@ You can avoid to use the environment variable, and just set the secret.
 ```yaml
 services:
   syncrelay:
-    image: chucky2401/syncrelay:1.0.0
+    image: chucky2401/syncrelay:1.27.7-r3
     container_name: syncrelay
     environment:
       - PUID=1000
@@ -144,7 +144,7 @@ So I use this docker compose file:
 ```yaml
 services:
   syncrelay:
-    image: chucky2401/syncrelay:1.0.0
+    image: chucky2401/syncrelay:1.27.7-r3
     container_name: syncrelay
     environment:
       - PUID=1000
