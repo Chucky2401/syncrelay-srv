@@ -1,4 +1,4 @@
-FROM alpine:3.19
+FROM alpine:3.20
 
 LABEL fr.blackwizard.author="Chucky2401" \
     fr.blackwizard.description="Syncthing RelaySrv" \
