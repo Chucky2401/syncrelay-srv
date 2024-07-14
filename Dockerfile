@@ -18,7 +18,7 @@ RUN \
     echo "*** Install syncthing-utils ***" ; \
     apk add --no-cache syncthing-utils
 
-ARG S6_OVERLAY_VERSION="3.1.6.2"
+ARG S6_OVERLAY_VERSION="3.2.0.0"
 ARG S6_OVERLAY_ARCH="aarch64"
 
 # add s6 overlay
