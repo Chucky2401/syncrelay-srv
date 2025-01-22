@@ -1,5 +1,29 @@
 # CHANGELOG
 
+## v1.29.2 - 2025/01/22
+
+- Upgrade **Alpine** from *3.20* to *3.21.2*
+- Using multi-stage image
+- Image size reduce from *81.3 MB* to *41.4 MB*
+
+### Vulnerabilities
+
+NAME        INSTALLED  FIXED-IN                                              TYPE  VULNERABILITY   SEVERITY
+libcrypto3  3.3.2-r4   1.0.2zl, 1.1.1zb, 3.0.16, 3.1.8, 3.2.4, 3.3.3, 3.4.1  apk   CVE-2024-13176  Unknown
+libssl3     3.3.2-r4   1.0.2zl, 1.1.1zb, 3.0.16, 3.1.8, 3.2.4, 3.3.3, 3.4.1  apk   CVE-2024-13176  Unknown
+linux-pam   1.6.1-r1                                                         apk   CVE-2024-10041  Medium
+
+### Commits
+
+- *99c8b6b* feat(svc-syncrelay): get exe version from the exe with parameter '-version'
+- *7e67254* chore: remove version label
+- *9485776* chore: better description in LABEL
+- *407bcd1* feat: use one RUN command in final stage instead of 3
+- *8cfd85c* feat: copy files from 'builder' stage
+- *7db6660* feat: add a 'builder' stage and move s6-overlay to this step
+
+---
+
 ## v1.27.7-r3 - 2024/07/17
 
 ### Changes
