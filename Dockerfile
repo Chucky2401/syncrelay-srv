@@ -53,31 +53,22 @@ LABEL fr.blackwizard.author="Chucky2401" \
     fr.blackwizard.vendor.url="https://syncthing.net" \
     fr.blackwizard.vendor.documentation="https://docs.syncthing.net"
 
-RUN \
-    echo "*** Update APK ***" ; \
-    apk update ; apk upgrade ; \
-    echo "*** Install Utils ***" ; \
-    apk add --no-cache ca-certificates bash xz bind-tools shadow ; \
-    echo "*** Install syncthing-utils ***" ; \
-    apk add --no-cache syncthing-utils
-
 COPY --from=builder /tmp/sync/strelaysrv /usr/bin/
 COPY --from=builder /tmp/s6-out/ /
 COPY src/ /
 
 RUN \
+  echo "*** Install Utils ***" ; \
+  apk add --no-cache ca-certificates bash xz bind-tools shadow ; \
   echo "*** Create 'syncrelay' user and create folder ***" ; \
   groupmod -g 1000 users ; \
   useradd -u 911 -U -d /var/strelaysrv -s /bin/bash syncrelay ; \
   usermod -G users syncrelay ; \
   mkdir -p /var/strelaysrv ; \
   echo "*** Cleanup ***" ; \
-  rm -rf /tmp/*
-
-RUN \
+  apk cache clean ; \
+  rm -rf /tmp/* ; \
   rm -f /etc/profile.d/color_prompt.sh.disabled
-
-COPY src/ /
 
 ENV PRIVATE="" TOKEN="" EXTERNAL_ADDRESS="" PORT="22067" POOLS="https://relays.syncthing.net/endpoint"
 ENV ENV="/etc/profile"
