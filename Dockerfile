@@ -1,4 +1,43 @@
-FROM alpine:3.20
+FROM alpine:3.21.2 AS builder
+
+ARG S6_OVERLAY_VERSION="3.2.0.2"
+
+RUN \
+  echo "**** Install build packages ****" && \
+  apk add --no-cache \
+    build-base \
+    go \
+    curl \
+    tar \
+    bash \
+    ca-certificates \
+    xz \
+    coreutils && \
+  echo "**** Fetch Synchting source code ****" && \
+  if [ -z ${SYNCTHING_RELEASE+x} ]; then \
+  SYNCTHING_RELEASE=$(curl -sX GET "https://api.github.com/repos/syncthing/syncthing/releases/latest" | awk '/tag_name/{print $4;exit}' FS='[""]'); \
+  fi && \
+  mkdir -p /tmp/sync && \
+  curl -o /tmp/syncthing-src.tar.gz -L "https://github.com/syncthing/syncthing/releases/download/${SYNCTHING_RELEASE}/syncthing-source-${SYNCTHING_RELEASE}.tar.gz" && \
+  tar xf /tmp/syncthing-src.tar.gz -C /tmp/sync --strip-components=1 && \
+  echo "**** Compile syncthing  ****" && \
+  cd /tmp/sync && \
+  go clean -modcache && \
+  CGO_ENABLED=0 go run build.go --no-upgrade build strelaysrv && \
+  echo "**** Fetch s6-overlay ****" && \
+  mkdir /tmp/s6-out && \
+  cd /tmp && \
+  S6_OVERLAY_ARCH=$(uname -m) && \
+  curl -o s6-overlay-noarch.tar.xz -L https://github.com/just-containers/s6-overlay/releases/download/v${S6_OVERLAY_VERSION}/s6-overlay-noarch.tar.xz && \
+  curl -o s6-overlay-${S6_OVERLAY_ARCH}.tar.xz -L https://github.com/just-containers/s6-overlay/releases/download/v${S6_OVERLAY_VERSION}/s6-overlay-${S6_OVERLAY_ARCH}.tar.xz && \
+  curl -o s6-overlay-symlinks-noarch.tar.xz -L https://github.com/just-containers/s6-overlay/releases/download/v${S6_OVERLAY_VERSION}/s6-overlay-symlinks-noarch.tar.xz && \
+  curl -o s6-overlay-symlinks-arch.tar.xz -L https://github.com/just-containers/s6-overlay/releases/download/v${S6_OVERLAY_VERSION}/s6-overlay-symlinks-arch.tar.xz && \
+  echo "**** Extract s6-overlay ****" && \
+  tar -C /tmp/s6-out -Jxpf /tmp/s6-overlay-noarch.tar.xz && \
+  tar -C /tmp/s6-out -Jxpf /tmp/s6-overlay-${S6_OVERLAY_ARCH}.tar.xz && \
+  tar -C /tmp/s6-out -Jxpf /tmp/s6-overlay-symlinks-noarch.tar.xz && \
+  tar -C /tmp/s6-out -Jxpf /tmp/s6-overlay-symlinks-arch.tar.xz
+
 
 LABEL fr.blackwizard.author="Chucky2401" \
     fr.blackwizard.description="Syncthing RelaySrv" \
@@ -18,20 +57,6 @@ RUN \
     echo "*** Install syncthing-utils ***" ; \
     apk add --no-cache syncthing-utils
 
-ARG S6_OVERLAY_VERSION="3.2.0.0"
-ARG S6_OVERLAY_ARCH="aarch64"
-
-# add s6 overlay
-ADD https://github.com/just-containers/s6-overlay/releases/download/v${S6_OVERLAY_VERSION}/s6-overlay-noarch.tar.xz /tmp
-RUN tar -C / -Jxpf /tmp/s6-overlay-noarch.tar.xz
-ADD https://github.com/just-containers/s6-overlay/releases/download/v${S6_OVERLAY_VERSION}/s6-overlay-${S6_OVERLAY_ARCH}.tar.xz /tmp
-RUN tar -C / -Jxpf /tmp/s6-overlay-${S6_OVERLAY_ARCH}.tar.xz
-
-# add s6 optional symlinks
-ADD https://github.com/just-containers/s6-overlay/releases/download/v${S6_OVERLAY_VERSION}/s6-overlay-symlinks-noarch.tar.xz /tmp
-RUN tar -C / -Jxpf /tmp/s6-overlay-symlinks-noarch.tar.xz
-ADD https://github.com/just-containers/s6-overlay/releases/download/v${S6_OVERLAY_VERSION}/s6-overlay-symlinks-arch.tar.xz /tmp
-RUN tar -C / -Jxpf /tmp/s6-overlay-symlinks-arch.tar.xz
 
 RUN \
   echo "*** Create 'syncrelay' user and create folder ***" ; \
