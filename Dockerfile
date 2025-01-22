@@ -38,6 +38,10 @@ RUN \
   tar -C /tmp/s6-out -Jxpf /tmp/s6-overlay-symlinks-noarch.tar.xz && \
   tar -C /tmp/s6-out -Jxpf /tmp/s6-overlay-symlinks-arch.tar.xz
 
+#
+# Final Stage
+#
+FROM alpine:3.21.2
 
 LABEL fr.blackwizard.author="Chucky2401" \
     fr.blackwizard.description="Syncthing RelaySrv" \
@@ -57,6 +61,9 @@ RUN \
     echo "*** Install syncthing-utils ***" ; \
     apk add --no-cache syncthing-utils
 
+COPY --from=builder /tmp/sync/strelaysrv /usr/bin/
+COPY --from=builder /tmp/s6-out/ /
+COPY src/ /
 
 RUN \
   echo "*** Create 'syncrelay' user and create folder ***" ; \
