@@ -44,8 +44,8 @@ RUN \
 FROM alpine:3.21.2
 
 LABEL fr.blackwizard.author="Chucky2401" \
-    fr.blackwizard.description="Syncthing RelaySrv" \
     fr.blackwizard.version="1.27.7-r3" \
+    fr.blackwizard.description="Syncthing Relay Server" \
     fr.blackwizard.source="https://github.com/Chucky2401/syncrelay-srv" \
     fr.blackwizard.support="https://github.com/Chucky2401/syncrelay-srv/issues" \
     fr.blackwizard.url="https://blackwizard.fr" \
