@@ -40,8 +40,8 @@ LABEL fr.blackwizard.author="Chucky2401" \
     fr.blackwizard.vendor.documentation="https://docs.syncthing.net"
 ARG VERSION
 
-COPY --from=builder /tmp/sync/strelaysrv /usr/bin/
-COPY src/ /
+COPY --from=builder --chmod=555 /tmp/sync/strelaysrv /usr/bin/
+COPY --chmod=555 src/ /
 
 RUN \
   echo "*** Install Utils ***" ; \
