@@ -30,15 +30,21 @@ RUN \
 #
 FROM alpine:latest
 
-LABEL fr.blackwizard.author="Chucky2401" \
-    fr.blackwizard.description="Syncthing Relay Server" \
-    fr.blackwizard.source="https://github.com/Chucky2401/syncrelay-srv" \
-    fr.blackwizard.support="https://github.com/Chucky2401/syncrelay-srv/issues" \
-    fr.blackwizard.url="https://blackwizard.fr" \
-    fr.blackwizard.vendor="The Syncthing Project" \
-    fr.blackwizard.vendor.url="https://syncthing.net" \
-    fr.blackwizard.vendor.documentation="https://docs.syncthing.net"
+ARG CREATED
+ARG DIGEST
+ARG REVISION
 ARG VERSION
+
+LABEL org.opencontainers.image.authors="Chucky2401"
+LABEL org.opencontainers.image.base.digest=$DIGEST
+LABEL org.opencontainers.image.base.name="alpine:latest"
+LABEL org.opencontainers.image.created=$CREATED
+LABEL org.opencontainers.image.description="Syncthing Relay Server"
+LABEL org.opencontainers.image.documentation="https://docs.syncthing.net"
+LABEL org.opencontainers.image.url="https://syncthing.net"
+LABEL org.opencontainers.image.revision=$REVISION
+LABEL org.opencontainers.image.source="https://syncthing.net"
+LABEL org.opencontainers.image.version=$VERSION
 
 COPY --from=builder --chmod=555 /tmp/sync/strelaysrv /usr/bin/
 COPY --chmod=555 src/ /
