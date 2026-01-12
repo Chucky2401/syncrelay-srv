@@ -2,3 +2,5 @@ notes/
 scripts/
 wsl/
 logs/
+.secrets
+strelaysrv
