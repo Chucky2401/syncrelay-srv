@@ -1,4 +1,4 @@
-FROM alpine:3.21.2 AS builder
+FROM alpine:latest AS builder
 
 
 RUN \
@@ -27,7 +27,7 @@ RUN \
 #
 # Final Stage
 #
-FROM alpine:3.21.2
+FROM alpine:latest
 
 LABEL fr.blackwizard.author="Chucky2401" \
     fr.blackwizard.description="Syncthing Relay Server" \
