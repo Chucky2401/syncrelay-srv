@@ -1,6 +1,5 @@
 FROM alpine:3.21.2 AS builder
 
-ARG S6_OVERLAY_VERSION="3.2.0.2"
 
 RUN \
   echo "**** Install build packages ****" && \
@@ -24,19 +23,6 @@ RUN \
   cd /tmp/sync && \
   go clean -modcache && \
   CGO_ENABLED=0 go run build.go --no-upgrade build strelaysrv && \
-  echo "**** Fetch s6-overlay ****" && \
-  mkdir /tmp/s6-out && \
-  cd /tmp && \
-  S6_OVERLAY_ARCH=$(uname -m) && \
-  curl -o s6-overlay-noarch.tar.xz -L https://github.com/just-containers/s6-overlay/releases/download/v${S6_OVERLAY_VERSION}/s6-overlay-noarch.tar.xz && \
-  curl -o s6-overlay-${S6_OVERLAY_ARCH}.tar.xz -L https://github.com/just-containers/s6-overlay/releases/download/v${S6_OVERLAY_VERSION}/s6-overlay-${S6_OVERLAY_ARCH}.tar.xz && \
-  curl -o s6-overlay-symlinks-noarch.tar.xz -L https://github.com/just-containers/s6-overlay/releases/download/v${S6_OVERLAY_VERSION}/s6-overlay-symlinks-noarch.tar.xz && \
-  curl -o s6-overlay-symlinks-arch.tar.xz -L https://github.com/just-containers/s6-overlay/releases/download/v${S6_OVERLAY_VERSION}/s6-overlay-symlinks-arch.tar.xz && \
-  echo "**** Extract s6-overlay ****" && \
-  tar -C /tmp/s6-out -Jxpf /tmp/s6-overlay-noarch.tar.xz && \
-  tar -C /tmp/s6-out -Jxpf /tmp/s6-overlay-${S6_OVERLAY_ARCH}.tar.xz && \
-  tar -C /tmp/s6-out -Jxpf /tmp/s6-overlay-symlinks-noarch.tar.xz && \
-  tar -C /tmp/s6-out -Jxpf /tmp/s6-overlay-symlinks-arch.tar.xz
 
 #
 # Final Stage
@@ -53,7 +39,6 @@ LABEL fr.blackwizard.author="Chucky2401" \
     fr.blackwizard.vendor.documentation="https://docs.syncthing.net"
 
 COPY --from=builder /tmp/sync/strelaysrv /usr/bin/
-COPY --from=builder /tmp/s6-out/ /
 COPY src/ /
 
 RUN \
@@ -70,7 +55,6 @@ RUN \
   rm -f /etc/profile.d/color_prompt.sh.disabled
 
 ENV PRIVATE="" TOKEN="" EXTERNAL_ADDRESS="" PORT="22067" POOLS="https://relays.syncthing.net/endpoint"
-ENV ENV="/etc/profile"
 ENV PUID=1000 PGID=1000 
 
 EXPOSE 22067 22070
@@ -80,4 +64,3 @@ VOLUME ["/var/strelaysrv"]
 HEALTHCHECK --interval=1m --timeout=10s \
   CMD nc -z localhost 22067 || exit 1
 
-ENTRYPOINT ["/init"]
