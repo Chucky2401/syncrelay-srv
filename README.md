@@ -1,28 +1,33 @@
-# SyncRelay-SRV
+# SyncRelay-Srv
 
 Find me at:
 
 * [Blog](https://blackwizard.fr)
 * [GitHub](https://github.com/Chucky2401)
 
-Syncthing relies on a network of community-contributed relay servers. Anyone can run a relay server, and it will automatically join the relay pool and be available to Syncthing users. The current list of relays can be found [here](https://relays.syncthing.net/) [^1].
+Syncthing relies on a network of community-contributed relay servers. Anyone
+can run a relay server, and it will automatically join the relay pool and be
+available to Syncthing users. The current list of relays can be found
+[at this link](https://relays.syncthing.net/) [^1].
 
 [![syncthing](https://raw.githubusercontent.com/Chucky2401/syncrelay-srv/master/img/syncthing.png)](https://syncthing.net)
 
 ## Supported Architectures
 
-Simply pulling `chucky2401/syncrelay:tagversion` should retrieve the correct image for your arch.
+Simply pulling `chucky2401/syncrelay:tagversion` should retrieve the correct
+image for your arch.
 
 ## Usage
 
-To help you get started creating a container from this image you can either use docker compose or the docker cli.
+To help you get started creating a container from this image you can either use
+docker compose or the docker cli.
 
 ### docker compose (recommended)
 
 ```yaml
 services:
   syncrelay:
-    image: chucky2401/syncrelay:1.27.7-r3
+    image: chucky2401/syncrelay:v2.0.13
     container_name: syncrelay
     environment:
       - PUID=1000
@@ -48,12 +53,16 @@ docker run -d \
   -p 22070:22070 \
   -v /path/to/syncthing/strelaysrv:/var/strelaysrv
   --restart unless-stopped \
-  chucky2401/syncrelay:1.27.7-r3
+  chucky2401/syncrelay:v2.0.13
 ```
 
 ## Parameters
 
-Containers are configured using parameters passed at runtime (such as those above). These parameters are separated by a colon and indicate `<external>:<internal>` respectively. For example, `-p 8080:80` would expose port `80` from inside the container to be accessible from the host's IP on port `8080` outside the container.
+Containers are configured using parameters passed at runtime (such as those
+above). These parameters are separated by a colon and indicate
+`<external>:<internal>` respectively. For example, `-p 8080:80` would expose
+port `80` from inside the container to be accessible from the host's IP on port
+`8080` outside the container.
 
 |       Parameter        | Default | Function                                                                                                                                                     |
 | :--------------------: | ------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------ |
@@ -63,37 +72,40 @@ Containers are configured using parameters passed at runtime (such as those abov
 |     `-e PGID=1000`     | `N/A`   | for GroupID - see below for explanation                                                                                                                      |
 |    `-e TZ=Etc/UTC`     | `N/A`   | specify a timezone to use, see this [list](https://en.wikipedia.org/wiki/List_of_tz_database_time_zones#List).                                               |
 |   `-e TOKEN=MyToken`   | `Empty` | Set a token to securing your relay. Disables joining any pools.                                                                                              |
-|   `-e PRIVATE=True`    | `Empty` | Set your relay private. It will not announced itself to the pool. If not set, it will announce to the default pool (`https://relays.syncthing.net/endpoint`) |
+|   `-e PRIVATE=`    | `Empty` | Set to `True` to make your relay private. It will not announced itself to the pool. If not set, it will announce to the default pool (`https://relays.syncthing.net/endpoint`) |
 |       `-e PORT=`       | `22067` | If you set a different port on the host side to inform the server - see below for example                                                                    |
 | `-e EXTERNAL_ADDRESS=` | `Empty` | If you want to fix the address of your relay                                                                                                                 |
+| `-e DEBUG=`          | `Empty` | Set to `True` to enable debug output of the binary |
+| `-e NAT=`          | `Empty` | Set to `True` to enable UPnP/NAT-PNP |
 |  `-v /var/strelaysrv`  | `N/A`   | Configuration files.                                                                                                                                         |
 
 ## Environment variables from files (Docker secrets)
 
-You can set any environment variable from a file by using a special prepend `FILE__`.
+For the `TOKEN` environment variable, you can use a Docker secret.
 
 As an example:
 
 ```bash
--e SECRET__TOKEN=/run/secrets/mysupertoken
+-e TOKEN=/run/secrets/mysupertoken
 ```
 
-Will set the environment variable `TOKEN` based on the contents of the `/run/secrets/mysupertoken` file.
+Will set the environment variable `TOKEN` based on the contents of the
+`/run/secrets/mysupertoken` file.
 
-**Note**: I recommand you to use this format to pass your token to your container.
+**Note**: I recommend you to use this format to pass your token to your container.
 
 Example:
 
 ```yaml
 services:
   syncrelay:
-    image: chucky2401/syncrelay:1.27.7-r3
+    image: chucky2401/syncrelay:v2.0.13
     container_name: syncrelay
     environment:
       - PUID=1000
       - PGID=1000
       - TZ=Etc/UTC
-      - SECRET_TOKEN=/run/secrets/mysupertoken
+      - TOKEN=/run/secrets/mysupertoken
     secrets:
       - mysupertoken
     volumes:
@@ -104,32 +116,6 @@ services:
     restart: unless-stopped
 secrets:
   mysupertoken:
-    file: ./secrets/token_file
-```
-
-You can avoid to use the environment variable, and just set the secret.
-
-**ATTENTION**: be advised that the container wait for the **TOKEN** variable, nothing else.
-
-```yaml
-services:
-  syncrelay:
-    image: chucky2401/syncrelay:1.27.7-r3
-    container_name: syncrelay
-    environment:
-      - PUID=1000
-      - PGID=1000
-      - TZ=Etc/UTC
-    secrets:
-      - TOKEN
-    volumes:
-      - ./strelaysrv:/var/strelaysrv
-    ports:
-      - 22067:22067
-      - 22070:22070
-    restart: unless-stopped
-secrets:
-  TOKEN:
     file: ./secrets/token_file
 ```
 
@@ -178,11 +164,15 @@ If you're not using a reverse proxy, you need to map the port to yours:
 
 ## User / Group Identifiers
 
-When using volumes (`-v` flags), permissions issues can arise between the host OS and the container, we avoid this issue by allowing you to specify the user `PUID` and group `PGID`.
+When using volumes (`-v` flags), permissions issues can arise between the host
+OS and the container, we avoid this issue by allowing you to specify the user
+`PUID` and group `PGID`.
 
-Ensure any volume directories on the host are owned by the same user you specify and any permissions issues will vanish like magic.
+Ensure any volume directories on the host are owned by the same user you
+specify and any permissions issues will vanish like magic.
 
-In this instance `PUID=1000` and `PGID=1000`, to find yours use `id your_user` as below:
+In this instance `PUID=1000` and `PGID=1000`, to find yours use `id your_user`
+as below:
 
 ```bash
 id your_user
@@ -192,7 +182,23 @@ Example output:
 
 ```text
 uid=1000(your_user) gid=1000(your_user) groups=1000(your_user)
+
 ```
+
+### Using 'user' instruction
+
+If you prefere, you can use the `user` instruction in the compose file:
+
+```
+services:
+  syncrelay:
+    image: chucky2401/syncrelay:v2.0.13
+    [...]
+    user: 1000:993
+```
+
+This instruction, will have higher priority on the PUID/PGID environment
+variables.
 
 [^1]: Text grab from the official [documentation](https://docs.syncthing.net/users/strelaysrv.html)
 [^2]: `:8080` is equivalent to `0.0.0.0:8080` for **all interfaces**
