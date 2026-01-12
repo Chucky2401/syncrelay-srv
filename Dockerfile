@@ -71,7 +71,9 @@ ENV PRIVATE="" TOKEN="" EXTERNAL_ADDRESS="" PORT="22067" POOLS="https://relays.s
 EXPOSE 22067 22070
 
 VOLUME ["/var/strelaysrv"]
+WORKDIR /var/strelaysrv
 
 HEALTHCHECK --interval=1m --timeout=10s \
   CMD nc -z localhost 22067 || exit 1
 
+ENTRYPOINT ["/entrypoint.sh"]
