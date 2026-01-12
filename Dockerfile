@@ -49,24 +49,24 @@ LABEL org.opencontainers.image.version=$VERSION
 COPY --from=builder --chmod=555 /tmp/sync/strelaysrv /usr/bin/
 COPY --chmod=555 src/ /
 
+ENV PUID=1000 PGID=1000
+
 RUN \
-  echo "*** Install Utils ***" ; \
-  apk add --no-cache ca-certificates bash xz bind-tools shadow ; \
-  echo "*** Create 'syncrelay' user and create folder ***" ; \
-  groupmod -g 1000 users ; \
-  useradd -u 911 -U -d /var/strelaysrv -s /bin/bash syncrelay ; \
-  usermod -G users syncrelay ; \
-  mkdir -p /var/strelaysrv ; \
-  echo "*** Cleanup ***" ; \
-  apk cache clean ; \
-  rm -rf /tmp/* ; \
-  rm -f /etc/profile.d/color_prompt.sh.disabled
   if [[ -z "${VERSION}" ]]; then \
     exit 1 ;\
   fi && \
+  echo "*** Install Utils ***" && \
+  apk add --no-cache ca-certificates shadow && \
+  echo "*** Create 'syncrelay' user and create folder ***" && \
+  addgroup -g ${PGID} syncrelay && \
+  adduser -D -u ${PUID} -h /var/strelaysrv -G syncrelay syncrelay && \
+  echo "*** Change permission on /entrypoint.sh" && \
+  chmod +x /entrypoint.sh && \
+  echo "*** Cleanup ***" && \
+  apk cache clean && \
+  rm -rf /tmp/*
 
 ENV PRIVATE="" TOKEN="" EXTERNAL_ADDRESS="" PORT="22067" POOLS="https://relays.syncthing.net/endpoint"
-ENV PUID=1000 PGID=1000 
 
 EXPOSE 22067 22070
 
