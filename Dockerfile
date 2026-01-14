@@ -55,6 +55,8 @@ RUN \
   if [[ -z "${VERSION}" ]]; then \
     exit 1 ;\
   fi && \
+  echo "*** Update packages ***" && \
+  apk update --no-cache && \
   echo "*** Install Utils ***" && \
   apk add --no-cache ca-certificates shadow && \
   echo "*** Create 'syncrelay' user and create folder ***" && \
