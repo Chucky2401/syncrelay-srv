@@ -29,9 +29,11 @@ echo "* Set variables..."
 
 if [[ $EXT_ADDRESS_PORT =~ ^:[0-9]+$ ]]; then
   echo "** External address has been set to 0.0.0.0:$PORT!"
+  EXT_ADDRESS_PORT="0.0.0.0:$PORT"
 else
   IPADDRESS=$(dig $EXTERNAL_ADDRESS -t A +short | grep -v '\.$')
   echo "** External address has been set to $IPADDRESS:$PORT!"
+  EXT_ADDRESS_PORT="$IPADDRESS:$PORT"
 fi
 
 if [[ -z $PRIVATE ]]; then
