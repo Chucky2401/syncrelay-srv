@@ -23,8 +23,8 @@ services:
       # - PGID=1000
       - TZ=Europe/Paris
       - TOKEN=/run/secrets/mysupertoken
+      - PORT=8080
       - PRIVATE=True
-      - NAT=True
       - DEBUG=True
     secrets:
       - mysupertoken
