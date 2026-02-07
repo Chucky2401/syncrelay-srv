@@ -2,6 +2,10 @@ FROM alpine:latest AS builder
 
 ARG VERSION
 
+RUN mkdir -p /tmp/sync
+
+WORKDIR /tmp/sync
+
 RUN \
   if [[ -z "${VERSION}" ]]; then \
     exit 1 ;\
@@ -17,11 +21,9 @@ RUN \
     xz \
     coreutils && \
   echo "**** Fetch Synchting source code ****" && \
-  mkdir -p /tmp/sync && \
   curl -o /tmp/syncthing-src.tar.gz -L "https://github.com/syncthing/syncthing/releases/download/${VERSION}/syncthing-source-${VERSION}.tar.gz" && \
   tar xf /tmp/syncthing-src.tar.gz -C /tmp/sync --strip-components=1 && \
   echo "**** Compile syncthing  ****" && \
-  cd /tmp/sync && \
   go clean -modcache && \
   CGO_ENABLED=0 go run build.go --no-upgrade build strelaysrv
 
