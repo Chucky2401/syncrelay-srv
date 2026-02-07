@@ -7,7 +7,7 @@ RUN mkdir -p /tmp/sync
 WORKDIR /tmp/sync
 
 RUN \
-  if [[ -z "${VERSION}" ]]; then \
+  if [ -z "${VERSION}" ]; then \
     exit 1 ;\
   fi && \
   echo "**** Install build packages ****" && \
@@ -54,7 +54,7 @@ COPY --chmod=555 src/ /
 ENV PUID=1000 PGID=1000
 
 RUN \
-  if [[ -z "${VERSION}" ]]; then \
+  if [ -z "${VERSION}" ]; then \
     exit 1 ;\
   fi && \
   echo "*** Update packages ***" && \
