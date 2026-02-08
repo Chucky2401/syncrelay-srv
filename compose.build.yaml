@@ -1,0 +1,40 @@
+services:
+  syncrelay:
+    container_name: syncrelay
+    tty: true
+    build:
+      context: .
+      dockerfile: Dockerfile
+      args:
+        CREATED: |-
+          $CREATED
+        DIGEST: |-
+          $DIGEST
+        REVISION: |-
+          $REVISION
+        VERSION: |-
+          $VERSION
+    pull_policy: build
+    user: 1234:1234
+    environment:
+      # You can stick to PUID/PGID env var
+      # instead of 'user' arguments
+      # - PUID=1000
+      # - PGID=1000
+      - TZ=Europe/Paris
+      - TOKEN=/run/secrets/mysupertoken
+      - PORT=8080
+      - PRIVATE=True
+      - DEBUG=True
+    secrets:
+      - mysupertoken
+    volumes:
+      - ./strelaysrv/:/var/strelaysrv
+    ports:
+      - 22067:22067
+      - 22070:22070
+    restart: unless-stopped
+
+secrets:
+  mysupertoken:
+    file: ./.secrets/.not_my_token

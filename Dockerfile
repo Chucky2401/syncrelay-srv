@@ -1,61 +1,83 @@
-FROM alpine:3.20
+FROM alpine:latest AS builder
 
-LABEL fr.blackwizard.author="Chucky2401" \
-    fr.blackwizard.description="Syncthing RelaySrv" \
-    fr.blackwizard.version="1.27.7-r3" \
-    fr.blackwizard.source="https://github.com/Chucky2401/syncrelay-srv" \
-    fr.blackwizard.support="https://github.com/Chucky2401/syncrelay-srv/issues" \
-    fr.blackwizard.url="https://blackwizard.fr" \
-    fr.blackwizard.vendor="The Syncthing Project" \
-    fr.blackwizard.vendor.url="https://syncthing.net" \
-    fr.blackwizard.vendor.documentation="https://docs.syncthing.net"
+ARG VERSION
+
+RUN mkdir -p /tmp/sync
+
+WORKDIR /tmp/sync
 
 RUN \
-    echo "*** Update APK ***" ; \
-    apk update ; apk upgrade ; \
-    echo "*** Install Utils ***" ; \
-    apk add --no-cache ca-certificates bash xz bind-tools shadow ; \
-    echo "*** Install syncthing-utils ***" ; \
-    apk add --no-cache syncthing-utils
+  if [ -z "${VERSION}" ]; then \
+    exit 1 ;\
+  fi && \
+  echo "**** Install build packages ****" && \
+  apk add --no-cache \
+    build-base \
+    go \
+    curl \
+    tar \
+    bash \
+    ca-certificates \
+    xz \
+    coreutils && \
+  echo "**** Fetch Synchting source code ****" && \
+  curl -o /tmp/syncthing-src.tar.gz -L "https://github.com/syncthing/syncthing/releases/download/${VERSION}/syncthing-source-${VERSION}.tar.gz" && \
+  tar xf /tmp/syncthing-src.tar.gz -C /tmp/sync --strip-components=1 && \
+  echo "**** Compile syncthing  ****" && \
+  go clean -modcache && \
+  CGO_ENABLED=0 go run build.go --no-upgrade build strelaysrv
 
-ARG S6_OVERLAY_VERSION="3.2.0.0"
-ARG S6_OVERLAY_ARCH="aarch64"
+#
+# Final Stage
+#
+FROM alpine:latest
 
-# add s6 overlay
-ADD https://github.com/just-containers/s6-overlay/releases/download/v${S6_OVERLAY_VERSION}/s6-overlay-noarch.tar.xz /tmp
-RUN tar -C / -Jxpf /tmp/s6-overlay-noarch.tar.xz
-ADD https://github.com/just-containers/s6-overlay/releases/download/v${S6_OVERLAY_VERSION}/s6-overlay-${S6_OVERLAY_ARCH}.tar.xz /tmp
-RUN tar -C / -Jxpf /tmp/s6-overlay-${S6_OVERLAY_ARCH}.tar.xz
+ARG CREATED
+ARG DIGEST
+ARG REVISION
+ARG VERSION
 
-# add s6 optional symlinks
-ADD https://github.com/just-containers/s6-overlay/releases/download/v${S6_OVERLAY_VERSION}/s6-overlay-symlinks-noarch.tar.xz /tmp
-RUN tar -C / -Jxpf /tmp/s6-overlay-symlinks-noarch.tar.xz
-ADD https://github.com/just-containers/s6-overlay/releases/download/v${S6_OVERLAY_VERSION}/s6-overlay-symlinks-arch.tar.xz /tmp
-RUN tar -C / -Jxpf /tmp/s6-overlay-symlinks-arch.tar.xz
+LABEL org.opencontainers.image.authors="Chucky2401"
+LABEL org.opencontainers.image.base.digest=$DIGEST
+LABEL org.opencontainers.image.base.name="alpine:latest"
+LABEL org.opencontainers.image.created=$CREATED
+LABEL org.opencontainers.image.description="Syncthing Relay Server"
+LABEL org.opencontainers.image.documentation="https://docs.syncthing.net"
+LABEL org.opencontainers.image.url="https://syncthing.net"
+LABEL org.opencontainers.image.revision=$REVISION
+LABEL org.opencontainers.image.source="https://syncthing.net"
+LABEL org.opencontainers.image.version=$VERSION
+
+COPY --from=builder --chmod=555 /tmp/sync/strelaysrv /usr/bin/
+COPY --chmod=555 src/ /
+
+ENV PUID=1000 PGID=1000
 
 RUN \
-  echo "*** Create 'syncrelay' user and create folder ***" ; \
-  groupmod -g 1000 users ; \
-  useradd -u 911 -U -d /var/strelaysrv -s /bin/bash syncrelay ; \
-  usermod -G users syncrelay ; \
-  mkdir -p /var/strelaysrv ; \
-  echo "*** Cleanup ***" ; \
+  if [ -z "${VERSION}" ]; then \
+    exit 1 ;\
+  fi && \
+  echo "*** Update packages ***" && \
+  apk update --no-cache && \
+  echo "*** Install Utils ***" && \
+  apk add --no-cache ca-certificates shadow && \
+  echo "*** Create 'syncrelay' user and create folder ***" && \
+  addgroup -g ${PGID} syncrelay && \
+  adduser -D -u ${PUID} -h /var/strelaysrv -G syncrelay syncrelay && \
+  echo "*** Change permission on /entrypoint.sh" && \
+  chmod +x /entrypoint.sh && \
+  echo "*** Cleanup ***" && \
+  apk cache clean && \
   rm -rf /tmp/*
 
-RUN \
-  rm -f /etc/profile.d/color_prompt.sh.disabled
-
-COPY src/ /
-
 ENV PRIVATE="" TOKEN="" EXTERNAL_ADDRESS="" PORT="22067" POOLS="https://relays.syncthing.net/endpoint"
-ENV ENV="/etc/profile"
-ENV PUID=1000 PGID=1000 
 
 EXPOSE 22067 22070
 
 VOLUME ["/var/strelaysrv"]
+WORKDIR /var/strelaysrv
 
 HEALTHCHECK --interval=1m --timeout=10s \
   CMD nc -z localhost 22067 || exit 1
 
-ENTRYPOINT ["/init"]
+ENTRYPOINT ["/entrypoint.sh"]
