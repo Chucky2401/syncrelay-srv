@@ -27,7 +27,7 @@ docker compose or the docker cli.
 ```yaml
 services:
   syncrelay:
-    image: chucky2401/syncrelay:v2.0.13
+    image: chucky2401/syncrelay:v2.0.14
     container_name: syncrelay
     environment:
       - PUID=1000
@@ -51,9 +51,9 @@ docker run -d \
   -e TZ=Etc/UTC \
   -p 22067:22067 \
   -p 22070:22070 \
-  -v /path/to/syncthing/strelaysrv:/var/strelaysrv
+  -v ./strelaysrv:/var/strelaysrv
   --restart unless-stopped \
-  chucky2401/syncrelay:v2.0.13
+  chucky2401/syncrelay:v2.0.14
 ```
 
 ## Parameters
@@ -187,7 +187,7 @@ uid=1000(your_user) gid=1000(your_user) groups=1000(your_user)
 
 ### Using 'user' instruction
 
-If you prefere, you can use the `user` instruction in the compose file:
+If you prefer, you can use the `user` instruction in the compose file:
 
 ```
 services:
