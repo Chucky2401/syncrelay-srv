@@ -1,6 +1,6 @@
 # CHANGELOG
 
-## v2.0.13 - 2026.01.12
+## v2.0.14 - 2026.02.08
 
 Almost one year later, an update \o/! Yeah!
 Hide your joy... But, I think this release will be the last, instead if the
@@ -15,6 +15,13 @@ the build to [Komodo](https://github.com/moghtech/komodo).
 
 ### Commits
 
+- *9290dc2* - feat(build): script for pre-build in Komodo
+- *e85337e* - chore(compose): add PORT and remove NAT
+- *e04b197* - chore(md): remove some markdown linter
+- *b117062* - chore(dockerfile): follow lint recommandation
+- *e689eb9* - chore(dockerfile): follow lint recommandation
+- *ccc185b* - fix(entrypoint): set EXT_ADDRESS_PORT accordingly
+- *cf8344e* - restore data
 - *7571625* - doc(README): update readme
 - *f6ed346* - feat(build): create a shell script to build image on local only
 - *0b5e1f4* - feat: add a compose.build.yaml and associated shell script
@@ -43,7 +50,6 @@ golang.org/x/crypto  v0.44.0     0.45.0    go-module  GHSA-j5w8-q4qc-rx2x  Mediu
 busybox              1.37.0-r30            apk        CVE-2025-60876       Medium    < 0.1% (15th)  < 0.1
 busybox-binsh        1.37.0-r30            apk        CVE-2025-60876       Medium    < 0.1% (15th)  < 0.1
 ssl_client           1.37.0-r30            apk        CVE-2025-60876       Medium    < 0.1% (15th)  < 0.1
-linux-pam            1.7.1-r2              apk        CVE-2024-10041       Medium    < 0.1% (8th)   < 0.1
 golang.org/x/crypto  v0.44.0     0.45.0    go-module  GHSA-f6x5-jh6r-wrfv  Medium    < 0.1% (3rd)   < 0.1
 
 ---
