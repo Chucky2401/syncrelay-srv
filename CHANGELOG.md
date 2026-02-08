@@ -45,12 +45,13 @@ the build to [Komodo](https://github.com/moghtech/komodo).
 
 ### Vulnerabilities
 
-NAME                 INSTALLED   FIXED IN  TYPE       VULNERABILITY        SEVERITY  EPSS           RISK
-golang.org/x/crypto  v0.44.0     0.45.0    go-module  GHSA-j5w8-q4qc-rx2x  Medium    < 0.1% (27th)  < 0.1
-busybox              1.37.0-r30            apk        CVE-2025-60876       Medium    < 0.1% (15th)  < 0.1
-busybox-binsh        1.37.0-r30            apk        CVE-2025-60876       Medium    < 0.1% (15th)  < 0.1
-ssl_client           1.37.0-r30            apk        CVE-2025-60876       Medium    < 0.1% (15th)  < 0.1
-golang.org/x/crypto  v0.44.0     0.45.0    go-module  GHSA-f6x5-jh6r-wrfv  Medium    < 0.1% (3rd)   < 0.1
+| NAME                | INSTALLED  | FIXED IN | TYPE      | VULNERABILITY       | SEVERITY | EPSS          | RISK  |
+| ------------------- | ---------- | -------- | --------- | ------------------- | -------- | ------------- | ----- |
+| golang.org/x/crypto | v0.44.0    | 0.45.0   | go-module | GHSA-j5w8-q4qc-rx2x | Medium   | < 0.1% (27th) | < 0.1 |
+| busybox             | 1.37.0-r30 |          | apk       | CVE-2025-60876      | Medium   | < 0.1% (15th) | < 0.1 |
+| busybox-binsh       | 1.37.0-r30 |          | apk       | CVE-2025-60876      | Medium   | < 0.1% (15th) | < 0.1 |
+| ssl_client          | 1.37.0-r30 |          | apk       | CVE-2025-60876      | Medium   | < 0.1% (15th) | < 0.1 |
+| golang.org/x/crypto | v0.44.0    | 0.45.0   | go-module | GHSA-f6x5-jh6r-wrfv | Medium   | < 0.1% (3rd)  | < 0.1 |
 
 ---
 
