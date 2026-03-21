@@ -78,9 +78,11 @@ if [[ "$HELP" == "true" ]]; then
   exit 0
 fi
 
+BUILDER_EXIST=0
 DOCKER_EXIST=0
 CERTIFICATE_VALID=0
 CERT_PATH=""
+BUILDER_NAME="mybuilder"
 CONTAINER_NAME="buildx_buildkit_mybuilder0"
 
 ################################################################################
@@ -93,7 +95,11 @@ if docker ps -a | grep "$CONTAINER_NAME" &>/dev/null; then
   DOCKER_EXIST=1
 fi
 
-if [[ $DOCKER_EXIST -eq 1 ]]; then
+if docker buildx ls | grep -q "$BUILDER_NAME" &>/dev/null; then
+  BUILDER_EXIST=1
+fi
+
+if [[ $DOCKER_EXIST -eq 1 && $BUILDER_EXIST -eq 1 ]]; then
   CERT_PATH=$(docker exec $CONTAINER_NAME sh -c "ls /etc/buildkit/certs/$SERVER_NAME/*$CERTIFICATE_NAME*")
 fi
 
@@ -103,7 +109,7 @@ if [[ -n "$CERT_PATH" ]]; then
   fi
 fi
 
-if [[ $DOCKER_EXIST -eq 0 || $CERTIFICATE_VALID -eq 0 ]]; then
+if [[ $BUILDER_EXIST -eq 0 || $DOCKER_EXIST -eq 0 || $CERTIFICATE_VALID -eq 0 ]]; then
   echo "Need recreate builder"
 
   # Copy internal CA cert in the repo directory
@@ -117,9 +123,9 @@ if [[ $DOCKER_EXIST -eq 0 || $CERTIFICATE_VALID -eq 0 ]]; then
   for cert in $certs; do echo "  ca = [\"$cert\"]" >>${REPO_DIR}/buildkit.toml; done
 
   # Remove previous and create fresh builder
-  docker buildx stop mybuilder
-  docker buildx rm mybuilder
-  docker buildx create --name mybuilder --use --bootstrap --node mybuilder0 --buildkitd-config ${REPO_DIR}/buildkit.toml
+  docker buildx stop $BUILDER_NAME
+  docker buildx rm $BUILDER_NAME
+  docker buildx create --name $BUILDER_NAME --use --bootstrap --node mybuilder0 --buildkitd-config ${REPO_DIR}/buildkit.toml
 
   # Remove working file
   rm -f *${CERTIFICATE_NAME}*.pem ${REPO_ROOT}/buildkit.toml
