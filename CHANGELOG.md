@@ -1,5 +1,25 @@
 # CHANGELOG
 
+## v2.0.15 - 2026.03.21
+
+### Changes
+
+- Remove git remote action
+
+### News
+
+- Add test on builder
+
+### Commits
+
+- *4bd9802* - feat(build): add test on builder
+- *4f94771* - doc(changelog): fromat vulnerabilities table
+- *167860b* - chore: remove github workflows
+- *263e860* - doc(readme): update readme
+- *da472d4* - doc(changelog): update changelog
+
+---
+
 ## v2.0.14 - 2026.02.08
 
 Almost one year later, an update \o/! Yeah!
