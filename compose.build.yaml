@@ -23,6 +23,7 @@ services:
       # - PGID=1000
       - TZ=Europe/Paris
       - TOKEN=/run/secrets/mysupertoken
+      - EXTERNAL_ADDRESS=sync.tjvs.win
       - PORT=8080
       - PRIVATE=True
       - DEBUG=True

@@ -60,7 +60,7 @@ RUN \
   echo "*** Update packages ***" && \
   apk update --no-cache && \
   echo "*** Install Utils ***" && \
-  apk add --no-cache ca-certificates shadow && \
+  apk add --no-cache ca-certificates shadow bind-tools && \
   echo "*** Create 'syncrelay' user and create folder ***" && \
   addgroup -g ${PGID} syncrelay && \
   adduser -D -u ${PUID} -h /var/strelaysrv -G syncrelay syncrelay && \

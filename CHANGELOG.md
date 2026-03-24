@@ -1,5 +1,18 @@
 # CHANGELOG
 
+## Fix external address - 2026.03.25
+
+### Changes
+
+- Add `bind-utils` for `dig` to allow using `EXTERNAL_ADDRESS`
+
+### Commits
+
+- *815ffe5* - chore(compose.build): test EXTERNAL_ADDRESS
+- *4b7932d* - fix(dockerfile): add `bind-utils` for dig
+
+---
+
 ## v2.0.15 - 2026.03.21
 
 ### Changes
