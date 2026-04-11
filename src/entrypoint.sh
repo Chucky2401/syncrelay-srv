@@ -62,19 +62,9 @@ fi
 
 echo -e "\n* Initialization complete!\n"
 
-if [[ $CURRENT_UID -eq 0 ]]; then
-  echo "* Run Syncthing Relay as default user (syncrelay (1000:1000))..."
-  echo ""
-  chown -R syncrelay:syncrelay /var/strelaysrv
-  exec su - syncrelay -c 'exec /usr/bin/strelaysrv "$@"' -- -ext-address="$EXT_ADDRESS_PORT" \
-    -token="$TOKEN" \
-    -pools="$POOLS" \
-    "$DYNAMIC_PARAMS"
-else
-  echo "* Run Syncthing Relay as custom user ($(id -u):$(id -g))..."
-  echo ""
-  exec /usr/bin/strelaysrv -ext-address="$EXT_ADDRESS_PORT" \
-    -token="$TOKEN" \
-    -pools="$POOLS" \
-    "$DYNAMIC_PARAMS"
-fi
+echo "* Run Syncthing Relay id $(id -u):$(id -g)..."
+echo ""
+exec /usr/bin/strelaysrv -ext-address="$EXT_ADDRESS_PORT" \
+  -token="$TOKEN" \
+  -pools="$POOLS" \
+  "$DYNAMIC_PARAMS"
