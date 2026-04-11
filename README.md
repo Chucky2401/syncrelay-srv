@@ -106,6 +106,7 @@ services:
       - 22067:22067
       - 22070:22070
     restart: unless-stopped
+
 secrets:
   mysupertoken:
     file: ./secrets/token_file
@@ -136,6 +137,7 @@ services:
       - 22067:22067
       - 22070:22070
     restart: unless-stopped
+
 secrets:
   mysupertoken:
     file: ./secrets/token_file
