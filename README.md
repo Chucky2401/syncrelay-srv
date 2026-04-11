@@ -27,7 +27,7 @@ docker compose or the docker cli.
 ```yaml
 services:
   syncrelay:
-    image: chucky2401/syncrelay:v2.0.14
+    image: chucky2401/syncrelay:v2.0.16
     container_name: syncrelay
     environment:
       - PUID=1000
@@ -53,7 +53,7 @@ docker run -d \
   -p 22070:22070 \
   -v ./strelaysrv:/var/strelaysrv
   --restart unless-stopped \
-  chucky2401/syncrelay:v2.0.14
+  chucky2401/syncrelay:v2.0.16
 ```
 
 ## Parameters
@@ -99,7 +99,7 @@ Example:
 ```yaml
 services:
   syncrelay:
-    image: chucky2401/syncrelay:v2.0.13
+    image: chucky2401/syncrelay:v2.0.16
     container_name: syncrelay
     environment:
       - PUID=1000
@@ -130,7 +130,7 @@ So I use this docker compose file:
 ```yaml
 services:
   syncrelay:
-    image: chucky2401/syncrelay:1.27.7-r3
+    image: chucky2401/syncrelay:v2.0.16
     container_name: syncrelay
     environment:
       - PUID=1000
@@ -192,7 +192,7 @@ If you prefer, you can use the `user` instruction in the compose file:
 ```
 services:
   syncrelay:
-    image: chucky2401/syncrelay:v2.0.13
+    image: chucky2401/syncrelay:v2.0.16
     [...]
     user: 1000:993
 ```
