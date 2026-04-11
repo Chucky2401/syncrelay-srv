@@ -27,11 +27,9 @@ docker compose or the docker cli.
 ```yaml
 services:
   syncrelay:
-    image: chucky2401/syncrelay:v2.0.14
+    image: chucky2401/syncrelay:v2.0.16
     container_name: syncrelay
     environment:
-      - PUID=1000
-      - PGID=1000
       - TZ=Etc/UTC
     volumes:
       - ./strelaysrv:/var/strelaysrv
@@ -46,14 +44,12 @@ services:
 ```bash
 docker run -d \
   --name=syncrelay \
-  -e PUID=1000 \
-  -e PGID=1000 \
   -e TZ=Etc/UTC \
   -p 22067:22067 \
   -p 22070:22070 \
   -v ./strelaysrv:/var/strelaysrv
   --restart unless-stopped \
-  chucky2401/syncrelay:v2.0.14
+  chucky2401/syncrelay:v2.0.16
 ```
 
 ## Parameters
@@ -68,8 +64,6 @@ port `80` from inside the container to be accessible from the host's IP on port
 | :--------------------: | ------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------ |
 |       `-p 22067`       | `N/A`   | Relay advertising                                                                                                                                            |
 |       `-p 22070`       | `N/A`   | Port to retrieve statistics                                                                                                                                  |
-|     `-e PUID=1000`     | `N/A`   | for UserID - see below for explanation                                                                                                                       |
-|     `-e PGID=1000`     | `N/A`   | for GroupID - see below for explanation                                                                                                                      |
 |    `-e TZ=Etc/UTC`     | `N/A`   | specify a timezone to use, see this [list](https://en.wikipedia.org/wiki/List_of_tz_database_time_zones#List).                                               |
 |   `-e TOKEN=MyToken`   | `Empty` | Set a token to securing your relay. Disables joining any pools.                                                                                              |
 |   `-e PRIVATE=`    | `Empty` | Set to `True` to make your relay private. It will not announced itself to the pool. If not set, it will announce to the default pool (`https://relays.syncthing.net/endpoint`) |
@@ -99,11 +93,9 @@ Example:
 ```yaml
 services:
   syncrelay:
-    image: chucky2401/syncrelay:v2.0.13
+    image: chucky2401/syncrelay:v2.0.16
     container_name: syncrelay
     environment:
-      - PUID=1000
-      - PGID=1000
       - TZ=Etc/UTC
       - TOKEN=/run/secrets/mysupertoken
     secrets:
@@ -114,6 +106,7 @@ services:
       - 22067:22067
       - 22070:22070
     restart: unless-stopped
+
 secrets:
   mysupertoken:
     file: ./secrets/token_file
@@ -130,11 +123,9 @@ So I use this docker compose file:
 ```yaml
 services:
   syncrelay:
-    image: chucky2401/syncrelay:1.27.7-r3
+    image: chucky2401/syncrelay:v2.0.16
     container_name: syncrelay
     environment:
-      - PUID=1000
-      - PGID=1000
       - TZ=Etc/UTC
       - SECRET_TOKEN=/run/secrets/mysupertoken
       - PORT=8080
@@ -146,6 +137,7 @@ services:
       - 22067:22067
       - 22070:22070
     restart: unless-stopped
+
 secrets:
   mysupertoken:
     file: ./secrets/token_file
@@ -162,43 +154,23 @@ If you're not using a reverse proxy, you need to map the port to yours:
       - 8080:22067
 ```
 
-## User / Group Identifiers
+## Changing running user
 
-When using volumes (`-v` flags), permissions issues can arise between the host
-OS and the container, we avoid this issue by allowing you to specify the user
-`PUID` and group `PGID`.
-
-Ensure any volume directories on the host are owned by the same user you
-specify and any permissions issues will vanish like magic.
-
-In this instance `PUID=1000` and `PGID=1000`, to find yours use `id your_user`
-as below:
-
-```bash
-id your_user
-```
-
-Example output:
-
-```text
-uid=1000(your_user) gid=1000(your_user) groups=1000(your_user)
-
-```
-
-### Using 'user' instruction
-
-If you prefer, you can use the `user` instruction in the compose file:
+You can use the `user` instruction in the compose file:
 
 ```
 services:
   syncrelay:
-    image: chucky2401/syncrelay:v2.0.13
+    image: chucky2401/syncrelay:v2.0.16
     [...]
     user: 1000:993
 ```
 
-This instruction, will have higher priority on the PUID/PGID environment
-variables.
+You nee to set the exact same identifier on the directory for the volume mount:
+
+```bash
+chown 1000:993 ./strelaysrv
+```
 
 [^1]: Text grab from the official [documentation](https://docs.syncthing.net/users/strelaysrv.html)
 [^2]: `:8080` is equivalent to `0.0.0.0:8080` for **all interfaces**

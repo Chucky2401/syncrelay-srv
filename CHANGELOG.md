@@ -1,5 +1,30 @@
 # CHANGELOG
 
+## Clean and enhancements - 2026.04.11
+
+Simplify the script with little enhancement to force default user to 1000:1000,
+you can still use `user` option in docker to change it at run. Don't forget to
+set correct user and group on volume!
+
+### Changes
+
+- Set default user to 1000:1000 (syncrelay inside image)
+- Entrypoint will have different name to differentiate variable with environment
+variable
+- Remove usage of PUID/PGID, also in readme
+
+### Commits
+
+- *58816c0* - doc(readme): add some newline
+- *aecdf52* - doc(readme): update instruction on user change
+- *726ec95* - doc(readme): update image name
+- *ee90146* - chore(compose): edit compose to test
+- *e5398be* - feat(entrypoint): simplify run since user default is 1000:1000
+- *cd19ce9* - feat(entrypoint): differenciate variable and env var
+- *54d90a8* - feat(Dockerfile): default user to 1000:1000
+
+---
+
 ## Fix external address - 2026.03.25
 
 ### Changes

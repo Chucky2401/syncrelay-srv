@@ -6,8 +6,8 @@ CURRENT_UID=$(id -u)
 
 TOKEN=${TOKEN}
 PORT=${PORT}
-EXTERNAL_ADDRESS=${EXTERNAL_ADDRESS}
-EXT_ADDRESS_PORT="$EXTERNAL_ADDRESS:$PORT"
+EXT_ADDRESS=${EXTERNAL_ADDRESS}
+EXT_ADDRESS_PORT="$EXT_ADDRESS:$PORT"
 PRIVATE=${PRIVATE}
 POOLS=${POOLS}
 
@@ -29,9 +29,9 @@ echo "* Set variables..."
 
 if [[ $EXT_ADDRESS_PORT =~ ^:[0-9]+$ ]]; then
   echo "** External address has been set to 0.0.0.0:$PORT!"
-  EXT_ADDRESS_PORT="0.0.0.0:$PORT"
+  EXT_ADDRESS_PORT=":$PORT"
 else
-  IPADDRESS=$(dig $EXTERNAL_ADDRESS -t A +short | grep -v '\.$')
+  IPADDRESS=$(dig $EXT_ADDRESS -t A +short | grep -v '\.$')
   echo "** External address has been set to $IPADDRESS:$PORT!"
   EXT_ADDRESS_PORT="$IPADDRESS:$PORT"
 fi
@@ -62,19 +62,9 @@ fi
 
 echo -e "\n* Initialization complete!\n"
 
-if [[ $CURRENT_UID -eq 0 ]]; then
-  echo "* Run Syncthing Relay as default user (syncrelay (1000:1000))..."
-  echo ""
-  chown -R syncrelay:syncrelay /var/strelaysrv
-  exec su - syncrelay -c 'exec /usr/bin/strelaysrv "$@"' -- -ext-address="$EXT_ADDRESS_PORT" \
-    -token="$TOKEN" \
-    -pools="$POOLS" \
-    "$DYNAMIC_PARAMS"
-else
-  echo "* Run Syncthing Relay as custom user ($(id -u):$(id -g))..."
-  echo ""
-  exec /usr/bin/strelaysrv -ext-address="$EXT_ADDRESS_PORT" \
-    -token="$TOKEN" \
-    -pools="$POOLS" \
-    "$DYNAMIC_PARAMS"
-fi
+echo "* Run Syncthing Relay id $(id -u):$(id -g)..."
+echo ""
+exec /usr/bin/strelaysrv -ext-address="$EXT_ADDRESS_PORT" \
+  -token="$TOKEN" \
+  -pools="$POOLS" \
+  "$DYNAMIC_PARAMS"
